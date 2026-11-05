@@ -33,6 +33,9 @@ class OllamaTeacher:
         self.timeout = timeout
         self.calls = 0
         self.seconds = 0.0
+        self.prompt_tokens = 0
+        self.completion_tokens = 0
+        self.server_seconds = 0.0
 
     def __call__(self, task: str, text: str) -> str:
         if task not in TASKS:
@@ -52,10 +55,23 @@ class OllamaTeacher:
             raise RuntimeError("Local Ollama unavailable. Start Ollama and download the requested model first.") from exc
         self.calls += 1
         self.seconds += perf_counter() - start
+        for field, target in (("prompt_eval_count", "prompt_tokens"),
+                              ("eval_count", "completion_tokens")):
+            value = result.get(field)
+            if type(value) is int and value >= 0:
+                setattr(self, target, getattr(self, target) + value)
+        duration = result.get("total_duration")
+        if type(duration) is int and duration >= 0:
+            self.server_seconds += duration / 1e9  # Ollama reports nanoseconds.
+        if not isinstance(result, dict):
+            raise ValueError("Local model response must be an object")
         answer = result.get("response")
         if not isinstance(answer, str):
             raise ValueError("Local model response lacked text")
-        return answer.strip().strip('"').splitlines()[0].strip()
+        lines = answer.strip().strip('"').splitlines()
+        if not lines or not lines[0].strip():
+            raise ValueError("Local model response contained no usable answer")
+        return lines[0].strip()
 
 
 def run_ollama_demo(task: str, *, model: str, seed: int, output: str,

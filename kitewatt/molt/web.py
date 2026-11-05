@@ -10,13 +10,14 @@ from urllib.parse import urlparse
 from .benchmark import DemoConfig, run_demo
 from .lab import LabConfig, oracle, run_text_lab
 from .text import TASKS, TextSkill, supported
+from .workloads import WorkloadConfig, run_workload
 
 DASHBOARD = Path(__file__).with_name("dashboard.html")
 
 
 def handler_factory(root: Path):
     class Handler(BaseHTTPRequestHandler):
-        server_version = "KiteWatt/1.0"
+        server_version = "KiteWatt/2.0"
 
         def _send(self, status: int, payload: dict, *, html: bool = False):
             data = (payload["html"].encode("utf-8") if html
@@ -36,8 +37,8 @@ def handler_factory(root: Path):
             if path == "/":
                 self._send(200, {"html": DASHBOARD.read_text(encoding="utf-8")}, html=True)
             elif path == "/api/status":
-                self._send(200, {"name": "KiteWatt", "version": "1.0.0",
-                                 "modes": ["text", "neural"], "paid_apis": False,
+                self._send(200, {"name": "KiteWatt", "version": "2.0.0",
+                                 "modes": ["text", "neural", "model_bench"], "paid_apis": False,
                                  "notes": "A local research demo, not a production AI optimizer."})
             else:
                 self._send(404, {"error": "Not found"})
@@ -61,6 +62,21 @@ def handler_factory(root: Path):
                     if type(seed) is not int or not 0 <= seed <= 10_000:
                         raise ValueError("Seed must be an integer from 0 to 10,000")
                     result = run_text_lab(LabConfig(seed=seed, output=str(root / "text")))
+                    self._send(200, result)
+                elif path == "/api/model-bench":
+                    backend = data.get("backend", "reference")
+                    task = data.get("task", "slug")
+                    model = data.get("model", "llama3.2:1b")
+                    count = data.get("test_count", 12)
+                    if backend not in ("reference", "ollama") or task not in TASKS:
+                        raise ValueError("Choose a supported benchmark and backend")
+                    if type(count) is not int or not 8 <= count <= 32:
+                        raise ValueError("Test size must be 8–32")
+                    if type(model) is not str or not 1 <= len(model) <= 80:
+                        raise ValueError("Invalid local model name")
+                    result = run_workload(WorkloadConfig(
+                        task=task, backend=backend, model=model,
+                        test=count, output=str(root / "model-bench")))
                     self._send(200, result)
                 elif path == "/api/neural":
                     op = data.get("operator", "max")
@@ -91,6 +107,11 @@ def handler_factory(root: Path):
                                      "operations": None})
                 else:
                     self._send(404, {"error": "Not found"})
+            except RuntimeError as exc:
+                if "Ollama unavailable" in str(exc):
+                    self._send(503, {"error": "Local Ollama not running or model unavailable. Install Ollama, download the model, and retry."})
+                else:
+                    self._send(500, {"error": "The local-model benchmark failed."})
             except (ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
                 self._send(400, {"error": str(exc)})
             except Exception:

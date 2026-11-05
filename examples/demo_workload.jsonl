@@ -1,0 +1,42 @@
+{"task": "slug", "split": "discovery", "input": " discovery  language  Compiler  Quantum"}
+{"task": "slug", "split": "discovery", "input": " Memory\tCompiler\trobotics\tREASONING  "}
+{"task": "slug", "split": "discovery", "input": "  Graphs\tCompiler\tPHYSICS\tsignal\tPower "}
+{"task": "slug", "split": "discovery", "input": "  Adaptive   Systems   power   Compiler "}
+{"task": "slug", "split": "discovery", "input": "ADAPTIVE  robotics"}
+{"task": "slug", "split": "discovery", "input": " Vision\tADAPTIVE\tlanguage\tpower  "}
+{"task": "slug", "split": "discovery", "input": "SCIENCE\tPHYSICS\ttools"}
+{"task": "slug", "split": "discovery", "input": "  language   PRACTICAL   DEEP   vision   graphs"}
+{"task": "slug", "split": "discovery", "input": "future   REASONING "}
+{"task": "slug", "split": "discovery", "input": "  language   vision   memory "}
+{"task": "slug", "split": "discovery", "input": "  power Nova practical MEMORY  "}
+{"task": "slug", "split": "discovery", "input": "practical\tGraphs "}
+{"task": "slug", "split": "discovery", "input": " Robotics  PRACTICAL  SCIENCE  POWER  Reusable  "}
+{"task": "slug", "split": "discovery", "input": "Signal   ROBOTICS   Compiler   research   Discovery"}
+{"task": "slug", "split": "discovery", "input": "Robotics\tnova "}
+{"task": "slug", "split": "discovery", "input": "power  Quantum  SIGNAL  "}
+{"task": "slug", "split": "validation", "input": " DISCOVERY\tCompiler\tSystems\tDeep\tLEARNING"}
+{"task": "slug", "split": "validation", "input": "Memory   DEEP   Compiler   research   PHYSICS  "}
+{"task": "slug", "split": "validation", "input": "  discovery   Language   Systems"}
+{"task": "slug", "split": "validation", "input": " science MEMORY vision adaptive "}
+{"task": "slug", "split": "validation", "input": "  power   Future  "}
+{"task": "slug", "split": "validation", "input": "Nova signal ROBOTICS VISION"}
+{"task": "slug", "split": "validation", "input": " energy  Adaptive  SIGNAL  "}
+{"task": "slug", "split": "validation", "input": " practical\tVision"}
+{"task": "slug", "split": "validation", "input": "  Science  Language "}
+{"task": "slug", "split": "validation", "input": "  GRAPHS  MEMORY "}
+{"task": "slug", "split": "validation", "input": "Learning   COMPILER   ENERGY "}
+{"task": "slug", "split": "validation", "input": "  DEEP\tMEMORY\tReusable\tReasoning\tLanguage"}
+{"task": "slug", "split": "validation", "input": " SYSTEMS\tPractical\tDEEP\tPower\tvision "}
+{"task": "slug", "split": "test", "input": "  physics  Quantum  discovery"}
+{"task": "slug", "split": "test", "input": " Science  REASONING  LEARNING "}
+{"task": "slug", "split": "test", "input": "Systems  Reasoning  ENERGY  Graphs  Adaptive"}
+{"task": "slug", "split": "test", "input": " signal  Graphs "}
+{"task": "slug", "split": "test", "input": "Systems  Quantum  Nova  Signal "}
+{"task": "slug", "split": "test", "input": "Reusable learning"}
+{"task": "slug", "split": "test", "input": "  DEEP  Signal  REUSABLE  DISCOVERY  Learning "}
+{"task": "slug", "split": "test", "input": "Nova  vision  "}
+{"task": "slug", "split": "test", "input": "  vision   Future   MEMORY   ADAPTIVE   PRACTICAL  "}
+{"task": "slug", "split": "test", "input": "  Adaptive   Learning   Reusable   Power "}
+{"task": "slug", "split": "test", "input": "  learning\tQuantum\treusable "}
+{"task": "slug", "split": "test", "input": " NOVA   science   Physics   Reasoning   research "}
+{"task": "slug", "split": "test", "input": " POWER  robotics  SCIENCE  ENERGY  Memory "}

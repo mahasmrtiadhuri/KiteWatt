@@ -29,6 +29,18 @@ def main() -> None:
     ollama.add_argument("--seed", type=int, default=7)
     ollama.add_argument("--max-queries", type=int, default=18)
     ollama.add_argument("--output", default="runs/ollama-demo")
+    workload = subparsers.add_parser("model-bench", help="Benchmark local models or the offline reference on held-out workflows")
+    workload.add_argument("--backend", choices=("reference", "ollama"), default="reference")
+    workload.add_argument("--model", default="llama3.2:1b", help="Downloaded local Ollama model name")
+    workload.add_argument("--port", type=int, default=11434, help="Local Ollama port")
+    workload.add_argument("--task", choices=("slug", "email_domain", "url_segment"), default="slug")
+    workload.add_argument("--test-count", type=int, default=24)
+    workload.add_argument("--queries", type=int, default=12)
+    workload.add_argument("--repeat", type=int, default=3)
+    workload.add_argument("--seed", type=int, default=7)
+    workload.add_argument("--dataset-file", help="Optional JSONL with explicit discovery, validation, test partitions")
+    workload.add_argument("--expected-requests", type=int, default=10000)
+    workload.add_argument("--output", default="runs/model-bench")
     serve = subparsers.add_parser("serve", help="Open the local dashboard (http://127.0.0.1:8765)")
     serve.add_argument("--port", type=int, default=8765)
     query = subparsers.add_parser("query", help="Query a locally stored certified skill")
@@ -36,6 +48,23 @@ def main() -> None:
     query.add_argument("--left", type=int, required=True)
     query.add_argument("--right", type=int, required=True)
     args = parser.parse_args()
+    if args.command == "model-bench":
+        from .workloads import WorkloadConfig, run_workload
+        report = run_workload(WorkloadConfig(
+            backend=args.backend, model=args.model, port=args.port, task=args.task,
+            seed=args.seed, test=args.test_count, max_queries=args.queries,
+            repeat=args.repeat, expected_requests=args.expected_requests,
+            output=args.output, dataset_file=args.dataset_file,
+        ))
+        model = report["model_reference"]
+        skill = report["compiled_skill"]
+        print(f"Backend: {args.backend} | test accuracy: {model['heldout_accuracy']:.3f}")
+        print(f"Compilation: {report['compiler']['status']} | skill deployed: {skill['deployed']}")
+        print(f"Reference mean latency: {model['mean_ms']:.3f} ms")
+        print("Energy: "+("unavailable" if model['joules_unisolated_cpu_package'] is None
+                           else str(model['joules_unisolated_cpu_package']) + " unisolated CPU package J"))
+        print("Report written to:", Path(args.output) / "workload_report.json")
+        return
     if args.command == "ollama-demo":
         from .ollama import run_ollama_demo
         report = run_ollama_demo(args.task, model=args.model, seed=args.seed,
