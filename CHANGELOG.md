@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0
+
+- Added opt-in real local-Ollama model workflow benchmarking without paid APIs.
+- Added held-out compiler evaluation against independent task oracles, plus time- and accuracy-aware routing gates.
+- Captured Ollama-reported prompt, output token, and server duration telemetry when available.
+- Added explicitly partitioned, size-bounded JSONL workload input for local testing.
+- Compared against an analytical cold/warm exact-cache baseline and full routing overhead.
+- Extended the local dashboard, CLI, CI smoke tests, and methodology documentation.
+- Continued to label energy measurements unavailable when no hardware source is present.
+
+
 ## 1.0.0 — Standalone research lab
 
 - Extracted MOLT into its own installable repository structure.

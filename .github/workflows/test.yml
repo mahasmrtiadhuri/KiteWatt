@@ -24,3 +24,7 @@ jobs:
         run: python -m kitewatt.molt text-lab --seed 7 --output runs/ci-text
       - name: Neural compression smoke
         run: python -m kitewatt.molt demo --operator max --steps 60 --requests 24 --output runs/ci-neural
+      - name: Model workflow evaluation (no external model)
+        run: |
+          python -m kitewatt.molt model-bench --backend reference --task slug \
+            --test-count 12 --queries 8 --output runs/ci-workload

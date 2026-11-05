@@ -1,5 +1,7 @@
 # KiteWatt
 
+**Version 2.0:** A real local-model evaluation path is now available through the optional Ollama runtime. The default offline benchmark uses a Python reference; the shipped example is not a verified real-LLM result. See [MODEL_BENCHMARK.md](docs/MODEL_BENCHMARK.md).
+
 **More intelligence. Less compute.**
 
 
@@ -9,6 +11,26 @@ A standalone, local-first research prototype (no paid API keys required). It inc
 
 
 > **Research status:** Functional prototype, **not AGI** and **not a novel state-of-the-art architecture**. Small-program synthesis, caching, and cost-aware routing all have established precedents. KiteWatt is intended as a rigorous playground for studying when skill compilation improves total cost.
+
+## New in v2: benchmark an actual local model
+
+No API keys or paid inference service are needed. First run the offline evaluation:
+
+```bash
+kitewatt model-bench --backend reference --task slug --output runs/offline
+```
+
+To evaluate a **real model running on your own machine**, install Ollama separately, download an appropriate open-weight model (subject to its license), then run:
+
+```bash
+ollama pull llama3.2:1b
+kitewatt model-bench --backend ollama --model llama3.2:1b \
+  --task slug --test-count 24 --output runs/ollama-slug
+```
+
+This uses `+"`http://127.0.0.1:11434`"+` only. Nothing is sent to paid AI APIs. If the model is unavailable, the command fails rather than substituting artificial results. Python reference mode is for validating our pipeline, **not** for claiming actual LLM savings.
+
+The model benchmark compares a teacher, a compiled rule, full router overhead, an analytical exact-cache call-count baseline, and a handwritten correctness oracle. Deployment requires passing both held-out accuracy and amortized latency tests. Actual joules are reported only when a compatible hardware counter is accessible. Read the [methodology](docs/MODEL_BENCHMARK.md) before drawing conclusions.
 
 ## Quick start
 

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kitewatt-ai"
-version = "1.0.0"
-description = "A zero-paid-API research lab for compiling repeated model behavior into auditable low-cost skills"
+version = "2.0.0"
+description = "A local-first model benchmarking and skill compilation lab for compiling repeated model behavior into auditable low-cost skills"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["torch>=2.2,<3"]
