@@ -11,13 +11,14 @@ from kitewatt.molt.workloads import WorkloadConfig, load_dataset, run_workload
 def test_offline_workload_has_independent_test_and_cache_baseline(tmp_path):
     report = run_workload(WorkloadConfig(output=str(tmp_path), repeat=3))
     assert report["partitions"] == {"discovery": 48, "validation": 20, "test": 24}
-    assert report["comparison"]["heldout_split_unseen_during_induction"]
+    assert report["comparison"]["heldout_split_unseen_during_induction_and_gate"]
     assert report["compiler"]["status"] == "compiled"
     assert report["model_reference"]["heldout_accuracy"] == 1.0
     assert report["compiled_skill"]["heldout_accuracy"] == 1.0
     assert report["exact_cache"]["cold_model_calls"] == 24
     assert report["exact_cache"]["warm_cache_hits"] == 48
     assert report["model_reference"]["server_prompt_tokens_observed"] is None
+    assert report["model_reference"]["teacher_calls_during_gate_calibration"] == 20
     assert json.loads((tmp_path / "workload_report.json").read_text())["config"]["backend"] == "reference"
     assert (tmp_path / "skill.json").exists()
 

@@ -129,15 +129,12 @@ def run_workload(config: WorkloadConfig, *, teacher: Callable[[str], str] | None
                       verifier=lambda text: oracle(config.task, text))
     compile_seconds = perf_counter() - started
     discovery_calls = calls - calls_before
-    # The verifier is an independent deterministic reference; the teacher
-    # receives only selected discovery inputs, never validation/test labels.
-    meter = EnergyCounter.discover()
-    power_before = meter.read() if meter else None
-    outputs, model_ms = _time_calls(observed_teacher, test)
-    power_after = meter.read() if meter else None
-    model_joules = meter.delta_joules(power_before, power_after) if meter else None
-    truth = [oracle(config.task, value) for value in test]
-    model_quality = _accuracy(outputs, truth)
+    # The verifier is a separate deterministic reference. Use validation
+    # examples for BOTH the quality/cost gate and router benchmarking.
+    # The final test set must not influence model/skill selection.
+    validation_truth = [oracle(config.task, value) for value in validation]
+    validation_model, validation_model_ms = _time_calls(observed_teacher, validation)
+    validation_model_quality = _accuracy(validation_model, validation_truth)
 
     compiled_quality: float | None = None
     compiled_latencies: dict | None = None
@@ -146,32 +143,48 @@ def run_workload(config: WorkloadConfig, *, teacher: Callable[[str], str] | None
     deployment = False
     router = TextRouter(lambda name, value: observed_teacher(value))
     if compiled.skill is not None:
-        predicted, compiled_ms = _time_calls(compiled.skill.predict, test * config.repeat)
-        compiled_quality = _accuracy(predicted[:len(test)], truth)
-        compiled_latencies = _timing(compiled_ms)
-        # Confidence on the held-out test matters, not merely the validation certificate.
-        gate = decide(reference_ms=max(mean(model_ms), 0.000001),
-                      compiled_ms=max(mean(compiled_ms), 0.000001),
-                      compile_seconds=compile_seconds, measured_accuracy=compiled_quality,
+        validation_compiled, validation_compiled_ms = _time_calls(
+            compiled.skill.predict, validation * config.repeat
+        )
+        calibration_quality = _accuracy(validation_compiled[:len(validation)], validation_truth)
+        gate = decide(reference_ms=max(mean(validation_model_ms), 0.000001),
+                      compiled_ms=max(mean(validation_compiled_ms), 0.000001),
+                      compile_seconds=compile_seconds, measured_accuracy=calibration_quality,
                       expected_requests=config.expected_requests)
-        # Measure the full router, not only the bare compiled function.
-        # Route overhead can erase a theoretical speedup for tiny operations.
         router.install(compiled.skill)
         routed_outputs, router_ms = _time_calls(
-            lambda text: router.predict(config.task, text), test * config.repeat
+            lambda text: router.predict(config.task, text), validation * config.repeat
         )
         routed_latency = _timing(router_ms)
-        routed_accuracy = _accuracy(routed_outputs[:len(test)], truth)
-        route_gate = decide(reference_ms=max(mean(model_ms), 0.000001),
+        routed_accuracy = _accuracy(routed_outputs[:len(validation)], validation_truth)
+        route_gate = decide(reference_ms=max(mean(validation_model_ms), 0.000001),
                             compiled_ms=max(mean(router_ms), 0.000001),
                             compile_seconds=compile_seconds,
                             measured_accuracy=routed_accuracy,
                             expected_requests=config.expected_requests)
         deployment = (gate.deploy and route_gate.deploy and
-                      compiled_quality >= model_quality and routed_accuracy >= model_quality)
+                      calibration_quality >= validation_model_quality and
+                      routed_accuracy >= validation_model_quality)
         gate_report = {**route_gate.to_dict(), "deploy": deployment,
                        "bare_compiled_gate": gate.to_dict(),
-                       "quality_check": "pass" if compiled_quality >= model_quality else "below_teacher"}
+                       "calibration_accuracy": calibration_quality,
+                       "calibration_model_accuracy": validation_model_quality,
+                       "quality_check": "pass" if calibration_quality >= validation_model_quality else "below_teacher"}
+
+    # A fully held-out final measurement happens AFTER deployment selection.
+    meter = EnergyCounter.discover()
+    power_before = meter.read() if meter else None
+    outputs, model_ms = _time_calls(observed_teacher, test)
+    power_after = meter.read() if meter else None
+    model_joules = meter.delta_joules(power_before, power_after) if meter else None
+    truth = [oracle(config.task, value) for value in test]
+    model_quality = _accuracy(outputs, truth)
+    if compiled.skill is not None:
+        compiled_predictions, test_compiled_ms = _time_calls(
+            compiled.skill.predict, test * config.repeat
+        )
+        compiled_quality = _accuracy(compiled_predictions[:len(test)], truth)
+        compiled_latencies = _timing(test_compiled_ms)
 
     # Cold exact cache: the first occurrence of each unseen test input must
     # be answered by the model. Subsequent repeated requests are cache hits.
@@ -180,6 +193,7 @@ def run_workload(config: WorkloadConfig, *, teacher: Callable[[str], str] | None
     repeated_requests = len(test) * config.repeat
     model_usage = {
         "teacher_calls_during_induction": discovery_calls,
+        "teacher_calls_during_gate_calibration": len(validation),
         "teacher_calls_during_test": len(test),
         "total_teacher_calls_observed": calls,
         "server_prompt_tokens_observed": getattr(provider, "prompt_tokens", None),
@@ -205,7 +219,7 @@ def run_workload(config: WorkloadConfig, *, teacher: Callable[[str], str] | None
                         "warm_cache_hits": repeated_requests - cold_calls,
                         "note": "Analytic call-count baseline; no cache speed or energy measured."},
         "comparison": {"handwritten_reference": "Independent reference function available for these predefined tasks",
-                       "heldout_split_unseen_during_induction": True,
+                       "heldout_split_unseen_during_induction_and_gate": True,
                        "raw_model_accuracy_required": "Comparison uses independent task-oracle labels"},
         "limitations": [
             "This benchmark covers three predefined text transformations, not open-ended LLM reasoning.",
@@ -214,6 +228,7 @@ def run_workload(config: WorkloadConfig, *, teacher: Callable[[str], str] | None
             "The exact-cache result is a logical call-count comparison, not measured runtime.",
             "CPU RAPL, if available, covers an unisolated package; it is not attributable total system or GPU energy.",
             "The reference backend uses Python functions, not an actual language model.",
+            "The deployment gate uses the validation split; the final test split is measured only after selection.",
             "The candidate router is benchmarked but not deployed when either accuracy or cost checks fail.",
             "No benchmark result implies frontier-model parity or newly discovered algorithms.",
         ],
