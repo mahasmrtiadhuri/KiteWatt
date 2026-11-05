@@ -1,0 +1,222 @@
+{
+  "title": "KiteWatt competitive audit; CPU timings are machine-specific",
+  "backend": "Python reference, not a real language model",
+  "seed": 7,
+  "methodology": "docs/COMPETITIVE_AUDIT.md",
+  "tasks": {
+    "slug": {
+      "config": {
+        "task": "slug",
+        "seed": 7,
+        "discovery": 48,
+        "validation": 24,
+        "test": 32,
+        "repeat": 10,
+        "rounds": 7,
+        "expected_requests": 10000,
+        "output": "runs/competitive/slug"
+      },
+      "compiler": {
+        "status": "compiled",
+        "teacher_calls": 6,
+        "programs_examined": 1463,
+        "compile_ms": 132.04356,
+        "operations": [
+          "strip",
+          "lower",
+          "spaces_to_dash"
+        ]
+      },
+      "heldout_test": {
+        "teacher": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00128556,
+          "min_ms_per_request": 0.00112262,
+          "max_ms_per_request": 0.00152211
+        },
+        "exact_cache": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00019475,
+          "min_ms_per_request": 0.00019141,
+          "max_ms_per_request": 0.00020028
+        },
+        "handwritten_reference": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00118477,
+          "min_ms_per_request": 0.00112688,
+          "max_ms_per_request": 0.00128543
+        },
+        "compiled_router": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00356778,
+          "min_ms_per_request": 0.00310179,
+          "max_ms_per_request": 0.0039916
+        },
+        "cache_diagnostics": {
+          "cold_teacher_calls_per_round": [
+            32,
+            32,
+            32,
+            32,
+            32,
+            32,
+            32
+          ],
+          "unique_requests": 32,
+          "total_requests": 320,
+          "cold_hit_rate": 0.9
+        }
+      },
+      "validation_decision": {
+        "deploy": false,
+        "best_baseline_ms": 0.00019363,
+        "candidate_amortized_ms": 0.01720859,
+        "required_relative_gain": 0.2,
+        "reason": "candidate absent, less accurate, or not at least 20% faster than strongest simple baseline"
+      },
+      "research_decision": "NO-GO: no demonstrated improvement over simple baselines on this workload"
+    },
+    "email_domain": {
+      "config": {
+        "task": "email_domain",
+        "seed": 7,
+        "discovery": 48,
+        "validation": 24,
+        "test": 32,
+        "repeat": 10,
+        "rounds": 7,
+        "expected_requests": 10000,
+        "output": "runs/competitive/email_domain"
+      },
+      "compiler": {
+        "status": "compiled",
+        "teacher_calls": 6,
+        "programs_examined": 1463,
+        "compile_ms": 118.83504,
+        "operations": [
+          "lower",
+          "email_domain"
+        ]
+      },
+      "heldout_test": {
+        "teacher": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00015765,
+          "min_ms_per_request": 0.00015481,
+          "max_ms_per_request": 0.00030201
+        },
+        "exact_cache": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 8.402e-05,
+          "min_ms_per_request": 8.056e-05,
+          "max_ms_per_request": 0.00015699
+        },
+        "handwritten_reference": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00015802,
+          "min_ms_per_request": 0.00014316,
+          "max_ms_per_request": 0.00044244
+        },
+        "compiled_router": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00221141,
+          "min_ms_per_request": 0.00183583,
+          "max_ms_per_request": 0.00312697
+        },
+        "cache_diagnostics": {
+          "cold_teacher_calls_per_round": [
+            32,
+            32,
+            32,
+            32,
+            32,
+            32,
+            32
+          ],
+          "unique_requests": 32,
+          "total_requests": 320,
+          "cold_hit_rate": 0.9
+        }
+      },
+      "validation_decision": {
+        "deploy": false,
+        "best_baseline_ms": 8.693e-05,
+        "candidate_amortized_ms": 0.01387664,
+        "required_relative_gain": 0.2,
+        "reason": "candidate absent, less accurate, or not at least 20% faster than strongest simple baseline"
+      },
+      "research_decision": "NO-GO: no demonstrated improvement over simple baselines on this workload"
+    },
+    "url_segment": {
+      "config": {
+        "task": "url_segment",
+        "seed": 7,
+        "discovery": 48,
+        "validation": 24,
+        "test": 32,
+        "repeat": 10,
+        "rounds": 7,
+        "expected_requests": 10000,
+        "output": "runs/competitive/url_segment"
+      },
+      "compiler": {
+        "status": "compiled",
+        "teacher_calls": 6,
+        "programs_examined": 1463,
+        "compile_ms": 169.78689,
+        "operations": [
+          "lower",
+          "last_url_segment"
+        ]
+      },
+      "heldout_test": {
+        "teacher": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00030103,
+          "min_ms_per_request": 0.00029771,
+          "max_ms_per_request": 0.00035556
+        },
+        "exact_cache": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.0001039,
+          "min_ms_per_request": 0.000103,
+          "max_ms_per_request": 0.00038573
+        },
+        "handwritten_reference": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00028982,
+          "min_ms_per_request": 0.0002869,
+          "max_ms_per_request": 0.00035287
+        },
+        "compiled_router": {
+          "heldout_accuracy": 1.0,
+          "median_ms_per_request": 0.00189334,
+          "min_ms_per_request": 0.00186171,
+          "max_ms_per_request": 0.00225905
+        },
+        "cache_diagnostics": {
+          "cold_teacher_calls_per_round": [
+            32,
+            32,
+            32,
+            32,
+            32,
+            32,
+            32
+          ],
+          "unique_requests": 32,
+          "total_requests": 320,
+          "cold_hit_rate": 0.9
+        }
+      },
+      "validation_decision": {
+        "deploy": false,
+        "best_baseline_ms": 0.00010605,
+        "candidate_amortized_ms": 0.01880395,
+        "required_relative_gain": 0.2,
+        "reason": "candidate absent, less accurate, or not at least 20% faster than strongest simple baseline"
+      },
+      "research_decision": "NO-GO: no demonstrated improvement over simple baselines on this workload"
+    }
+  }
+}

@@ -41,6 +41,13 @@ def main() -> None:
     workload.add_argument("--dataset-file", help="Optional JSONL with explicit discovery, validation, test partitions")
     workload.add_argument("--expected-requests", type=int, default=10000)
     workload.add_argument("--output", default="runs/model-bench")
+    audit = subparsers.add_parser("competitive-audit", help="Compare compiled skills against cache and direct code")
+    audit.add_argument("--task", choices=("slug", "email_domain", "url_segment"), default="slug")
+    audit.add_argument("--seed", type=int, default=7)
+    audit.add_argument("--repeat", type=int, default=10)
+    audit.add_argument("--rounds", type=int, default=5)
+    audit.add_argument("--expected-requests", type=int, default=10000)
+    audit.add_argument("--output", default="runs/competitive-audit")
     serve = subparsers.add_parser("serve", help="Open the local dashboard (http://127.0.0.1:8765)")
     serve.add_argument("--port", type=int, default=8765)
     query = subparsers.add_parser("query", help="Query a locally stored certified skill")
@@ -48,6 +55,23 @@ def main() -> None:
     query.add_argument("--left", type=int, required=True)
     query.add_argument("--right", type=int, required=True)
     args = parser.parse_args()
+    if args.command == "competitive-audit":
+        from .competitive import AuditConfig, run_competitive_audit
+        report = run_competitive_audit(AuditConfig(
+            task=args.task, seed=args.seed, repeat=args.repeat,
+            rounds=args.rounds, expected_requests=args.expected_requests,
+            output=args.output,
+        ))
+        decision = report["validation_decision"]
+        print(f"Task: {args.task} | compiled: {report['compiler']['status']}")
+        print(f"Deploy after validation: {decision['deploy']}")
+        for name, metrics in report["heldout_test"].items():
+            if name != "cache_diagnostics":
+                print(f"{name:22} accuracy={metrics['heldout_accuracy']:.3f} "
+                      f"median={metrics['median_ms_per_request']:.6f} ms")
+        print(report["research_decision"])
+        print("Report:", Path(args.output) / "competitive_report.json")
+        return
     if args.command == "model-bench":
         from .workloads import WorkloadConfig, run_workload
         report = run_workload(WorkloadConfig(

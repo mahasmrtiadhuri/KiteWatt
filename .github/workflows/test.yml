@@ -28,3 +28,7 @@ jobs:
         run: |
           python -m kitewatt.molt model-bench --backend reference --task slug \
             --test-count 12 --queries 8 --output runs/ci-workload
+      - name: Competitive audit against simple baselines
+        run: |
+          python -m kitewatt.molt competitive-audit --task slug \
+            --repeat 3 --rounds 2 --output runs/ci-audit

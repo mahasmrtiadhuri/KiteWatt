@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.0 — Competitive audit
+
+- Compared full compiled-router cost against measured exact-cache and direct-Python baselines on held-out tasks.
+- Required a validation-only cost/quality gate and reported negative results rather than an artificial speedup.
+- Added a machine-readable CPU audit example, research decision memo, CLI command and regression tests.
+- Made no new claims about real-model energy or model-provider savings.
+
 ## 2.0.0
 
 - Added opt-in real local-Ollama model workflow benchmarking without paid APIs.
