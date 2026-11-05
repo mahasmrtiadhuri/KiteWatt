@@ -1,5 +1,7 @@
 # KiteWatt
 
+**Version 2.1:** Added an honest competitive audit against direct code and measured in-process caching. See [COMPETITIVE_AUDIT.md](docs/COMPETITIVE_AUDIT.md).
+
 **Version 2.0:** A real local-model evaluation path is now available through the optional Ollama runtime. The default offline benchmark uses a Python reference; the shipped example is not a verified real-LLM result. See [MODEL_BENCHMARK.md](docs/MODEL_BENCHMARK.md).
 
 **More intelligence. Less compute.**
@@ -31,6 +33,20 @@ kitewatt model-bench --backend ollama --model llama3.2:1b \
 This uses `+"`http://127.0.0.1:11434`"+` only. Nothing is sent to paid AI APIs. If the model is unavailable, the command fails rather than substituting artificial results. Python reference mode is for validating our pipeline, **not** for claiming actual LLM savings.
 
 The model benchmark compares a teacher, a compiled rule, full router overhead, an analytical exact-cache call-count baseline, and a handwritten correctness oracle. Deployment requires passing both held-out accuracy and amortized latency tests. Actual joules are reported only when a compatible hardware counter is accessible. Read the [methodology](docs/MODEL_BENCHMARK.md) before drawing conclusions.
+
+## Competitive evaluation: is KiteWatt actually better?
+
+Do **not** judge the project by beating a needlessly expensive model on a trivial
+transformation. For the present tasks, a cache and a handwritten function are
+stronger baselines. The new audit measures all of them on held-out inputs:
+
+```bash
+kitewatt competitive-audit --task slug --output runs/competitive/slug
+```
+
+The local reference experiment did **not** show a competitive win; see
+[the audit and next-step decision](docs/COMPETITIVE_AUDIT.md). External
+libraries and live production models have not yet been benchmarked head-to-head.
 
 ## Quick start
 
