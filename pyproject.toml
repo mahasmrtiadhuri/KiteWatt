@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kitewatt-ai"
+version = "1.0.0"
+description = "A zero-paid-API research lab for compiling repeated model behavior into auditable low-cost skills"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.2,<3"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[project.scripts]
+kitewatt = "kitewatt.molt.cli:main"
+molt = "kitewatt.molt.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["kitewatt*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.setuptools.package-data]
+"kitewatt.molt" = ["dashboard.html"]

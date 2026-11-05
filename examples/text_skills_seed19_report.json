@@ -1,0 +1,225 @@
+{
+  "benchmark": "MOLT bounded string-skill synthesis",
+  "config": {
+    "seed": 19,
+    "discovery": 60,
+    "validation": 24,
+    "test": 40,
+    "max_queries": 18,
+    "repeat": 10,
+    "output": "runs/seed19"
+  },
+  "tasks": {
+    "slug": {
+      "status": "compiled",
+      "program": [
+        "strip",
+        "lower",
+        "spaces_to_dash"
+      ],
+      "teacher_calls_for_discovery": 6,
+      "teacher_calls_for_validation": 24,
+      "candidate_programs": 1463,
+      "candidates_remaining": 3,
+      "validation_accuracy": 1.0,
+      "heldout_test_accuracy": 1.0,
+      "compilation_seconds": 0.16389,
+      "reference_median_ms": 0.001202,
+      "compiled_median_ms": 0.002238,
+      "router_median_ms": 0.001342,
+      "cost_gate": {
+        "deploy": false,
+        "reason": "not_faster_enough",
+        "break_even_requests": null,
+        "latency_saving_pct": -86.19
+      },
+      "routing": {
+        "compiled": 0,
+        "fallback": 400
+      },
+      "discovery_trace": [
+        {
+          "input": "  QUANTUM\tReusable\tDISCOVERY\tPOWER\tPractical  ",
+          "teacher_output": "quantum-reusable-discovery-power-practical",
+          "remaining_candidates": 3,
+          "competing_predictions": 63
+        },
+        {
+          "input": " SCIENCE  LANGUAGE  ",
+          "teacher_output": "science-language",
+          "remaining_candidates": 3,
+          "competing_predictions": 1
+        },
+        {
+          "input": " Physics\tMEMORY\tVision",
+          "teacher_output": "physics-memory-vision",
+          "remaining_candidates": 3,
+          "competing_predictions": 1
+        },
+        {
+          "input": "  Future Reusable ADAPTIVE",
+          "teacher_output": "future-reusable-adaptive",
+          "remaining_candidates": 3,
+          "competing_predictions": 1
+        },
+        {
+          "input": " Compiler LANGUAGE discovery ",
+          "teacher_output": "compiler-language-discovery",
+          "remaining_candidates": 3,
+          "competing_predictions": 1
+        },
+        {
+          "input": "  Deep  REUSABLE  Nova  Tools",
+          "teacher_output": "deep-reusable-nova-tools",
+          "remaining_candidates": 3,
+          "competing_predictions": 1
+        }
+      ],
+      "test_count": 40,
+      "test_inputs_used_during_compilation": 0
+    },
+    "email_domain": {
+      "status": "compiled",
+      "program": [
+        "lower",
+        "email_domain"
+      ],
+      "teacher_calls_for_discovery": 6,
+      "teacher_calls_for_validation": 24,
+      "candidate_programs": 1463,
+      "candidates_remaining": 41,
+      "validation_accuracy": 1.0,
+      "heldout_test_accuracy": 1.0,
+      "compilation_seconds": 0.1481,
+      "reference_median_ms": 0.00018,
+      "compiled_median_ms": 0.001142,
+      "router_median_ms": 0.00028,
+      "cost_gate": {
+        "deploy": false,
+        "reason": "not_faster_enough",
+        "break_even_requests": null,
+        "latency_saving_pct": -534.44
+      },
+      "routing": {
+        "compiled": 0,
+        "fallback": 400
+      },
+      "discovery_trace": [
+        {
+          "input": "future6256@OpenSource.org",
+          "teacher_output": "opensource.org",
+          "remaining_candidates": 41,
+          "competing_predictions": 28
+        },
+        {
+          "input": "research4893@SYSTEMS.AI",
+          "teacher_output": "systems.ai",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "language1766@example.com",
+          "teacher_output": "example.com",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "adaptive9581@research.io",
+          "teacher_output": "research.io",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "compiler1953@OPENSOURCE.ORG",
+          "teacher_output": "opensource.org",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "future4043@research.io",
+          "teacher_output": "research.io",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        }
+      ],
+      "test_count": 40,
+      "test_inputs_used_during_compilation": 0
+    },
+    "url_segment": {
+      "status": "compiled",
+      "program": [
+        "lower",
+        "last_url_segment"
+      ],
+      "teacher_calls_for_discovery": 6,
+      "teacher_calls_for_validation": 24,
+      "candidate_programs": 1463,
+      "candidates_remaining": 41,
+      "validation_accuracy": 1.0,
+      "heldout_test_accuracy": 1.0,
+      "compilation_seconds": 0.17467,
+      "reference_median_ms": 0.000311,
+      "compiled_median_ms": 0.001202,
+      "router_median_ms": 0.0004205,
+      "cost_gate": {
+        "deploy": false,
+        "reason": "not_faster_enough",
+        "break_even_requests": null,
+        "latency_saving_pct": -286.5
+      },
+      "routing": {
+        "compiled": 0,
+        "fallback": 400
+      },
+      "discovery_trace": [
+        {
+          "input": "https://opensource.org/Discovery/Reusable-Graphs?src=email",
+          "teacher_output": "reusable-graphs",
+          "remaining_candidates": 41,
+          "competing_predictions": 38
+        },
+        {
+          "input": "https://research.io/Systems/Research/",
+          "teacher_output": "research",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "https://research.io/Nova/Robotics?ref=summer",
+          "teacher_output": "robotics",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "https://opensource.org/Compiler/Compiler/",
+          "teacher_output": "compiler",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "https://research.io/Discovery/Language/",
+          "teacher_output": "language",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        },
+        {
+          "input": "https://systems.ai/Reasoning/Adaptive?src=email",
+          "teacher_output": "adaptive",
+          "remaining_candidates": 41,
+          "competing_predictions": 1
+        }
+      ],
+      "test_count": 40,
+      "test_inputs_used_during_compilation": 0
+    }
+  },
+  "measurement_notes": [
+    "The teacher here is a handwritten Python reference, NOT a neural model or a commercial API.",
+    "Held-out test inputs were not available to the compiler; the synthetic input distribution remains narrow.",
+    "Correctness compares with the reference teacher, and compilation can still fail on other inputs.",
+    "The compiled DSL can be slower than handwritten Python; the cost gate then selects the reference.",
+    "No electricity or training-energy savings are implied by this benchmark.",
+    "Timing numbers are platform dependent and lack confidence intervals.",
+    "Programs are bounded DSL specifications, never generated executable Python code."
+  ]
+}
